@@ -6,7 +6,6 @@
     android:orientation="vertical"
     android:minHeight="@dimen/list_item_height"
     android:background="@drawable/rounded_rectangle_border"
-    android:layout_marginStart="@dimen/spacing_large"
     android:layout_margin="@dimen/spacing_standard">
 
     <TextView
@@ -14,11 +13,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="@dimen/text_large"
+        android:layout_marginStart="@dimen/spacing_large"
         android:layout_marginTop="@dimen/spacing_standard"
         tools:text= "High School High"/>
 
     <TextView
         android:id="@+id/neighborhood"
+        android:layout_marginStart="@dimen/spacing_large"
         android:layout_marginTop="@dimen/spacing_standard"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
