@@ -9,7 +9,12 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.example.nycschoolscores.data.School
 import com.example.nycschoolscores.databinding.SchoolRecyclerViewItemBinding
 
-class SchoolAdapter : ListAdapter<School, SchoolAdapter.SchoolViewHolder>(SchoolsComparator()) {
+class SchoolAdapter(private val onClickListener: OnClickListener) :
+    ListAdapter<School, SchoolAdapter.SchoolViewHolder>(SchoolsComparator()) {
+
+    class OnClickListener(val clickListener: (school: School) -> Unit) {
+        fun onClick(school: School) = clickListener(school)
+    }
 
     inner class SchoolViewHolder(val binding: SchoolRecyclerViewItemBinding) :
         ViewHolder(binding.root)
@@ -30,11 +35,15 @@ class SchoolAdapter : ListAdapter<School, SchoolAdapter.SchoolViewHolder>(School
             schoolName.text = school.name
             neighborhood.text = school.neighborhood
         }
+        holder.itemView.setOnClickListener {
+            onClickListener.onClick(school)
+        }
 
     }
 
     class SchoolsComparator : DiffUtil.ItemCallback<School>() {
-        override fun areItemsTheSame(oldItem: School, newItem: School): Boolean = oldItem === newItem
+        override fun areItemsTheSame(oldItem: School, newItem: School): Boolean =
+            oldItem === newItem
 
         override fun areContentsTheSame(oldItem: School, newItem: School): Boolean =
             oldItem.id == newItem.id

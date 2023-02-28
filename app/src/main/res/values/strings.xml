@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">NYCSchoolScores</string>
+    <string name="test_results">SAT Results Average</string>
+    <string name="reading_score">Average Reading Score: %1$s</string>
+    <string name="writing_score">Average Writing Score: %1$s</string>
+    <string name="math_score">Average Math Score: %1$s</string>
+    <string name="not_available">Not Available</string>
+
 </resources>

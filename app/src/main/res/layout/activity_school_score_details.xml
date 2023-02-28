@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:layout_margin="@dimen/spacing_large"
+    tools:context=".SchoolScoreDetailsActivity">
+
+    <TextView
+        android:id="@+id/school_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/text_large"
+        tools:text = "High School High"/>
+
+    <TextView
+        android:layout_marginTop="@dimen/spacing_standard"
+        android:text="@string/test_results"
+        android:textSize="@dimen/text_medium"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:id="@+id/reading_score_avg"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_standard"
+        android:textSize="@dimen/text_medium"
+        tools:text ="700"/>
+
+    <TextView
+        android:id="@+id/math_score_avg"
+        android:layout_marginTop="@dimen/spacing_standard"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/text_medium"
+        tools:text ="700"/>
+
+    <TextView
+        android:id="@+id/writing_score_avg"
+        android:layout_marginTop="@dimen/spacing_standard"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/text_medium"
+        tools:text ="700"/>
+
+
+
+</androidx.appcompat.widget.LinearLayoutCompat>

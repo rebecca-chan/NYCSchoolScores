@@ -2,6 +2,7 @@
 <resources>
     <dimen name="list_item_height">100dp</dimen>
     <dimen name="text_large">24sp</dimen>
+    <dimen name="text_medium">18sp</dimen>
     <dimen name="text_small">12sp</dimen>
     <dimen name="spacing_standard">8dp</dimen>
     <dimen name="spacing_large">16dp</dimen>

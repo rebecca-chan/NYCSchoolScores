@@ -1,8 +1,11 @@
 package com.example.nycschoolscores
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import androidx.activity.viewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.nycschoolscores.api.SchoolsService
@@ -14,35 +17,30 @@ import java.io.IOException
 
 class MainActivity : AppCompatActivity() {
 
-    val TAG = "Main activity"
-
-    private lateinit var binding: ActivityMainBinding
-    val schoolAdapter = SchoolAdapter()
+    private lateinit var schoolsAdapter: SchoolAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater)
+        val binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         binding.apply {
-            schoolRecyclerView.adapter = schoolAdapter
+           schoolsAdapter = SchoolAdapter(
+                SchoolAdapter.OnClickListener {
+                    school ->
+                    intent = Intent(this@MainActivity, SchoolScoreDetailsActivity::class.java)
+                    intent.putExtra("id", school.id)
+                    this@MainActivity.startActivity(intent)
+                }
+            )
+            schoolRecyclerView.adapter = schoolsAdapter
             schoolRecyclerView.layoutManager = LinearLayoutManager(this@MainActivity)
         }
 
-        lifecycleScope.launch {
-            val response = try {
-                SchoolsService.api.getSchools()
-            } catch (e: IOException) {
-                Log.e(TAG, "IO Exception")
-                return@launch
-            } catch (e: HttpException) {
-                Log.e(TAG, "HTTP Exception")
-                return@launch
-            }
-            if (response.isSuccessful && response.body() != null) {
-                val schools = response.body()!!
-                schoolAdapter.submitList(schools)
-            }
-        }
+        val schoolsViewModel: SchoolsViewModel =
+            ViewModelProvider(this).get(SchoolsViewModel::class.java)
+
+
+        schoolsViewModel.schools.observe(this, {schools -> schoolsAdapter.submitList(schools)})
     }
 }
