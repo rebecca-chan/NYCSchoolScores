@@ -46,7 +46,12 @@ class SchoolScoresViewModel: ViewModel() {
                 return@launch
             }
             if (response.isSuccessful && response.body() != null) {
-                _scores.value = response.body()?.getOrNull(0)
+                val scores = response.body()?.getOrNull(0)
+                if (scores == null) {
+                    _errorState.value = Throwable()
+                } else {
+                    _scores.value = scores
+                }
                 _loadingState.value = false
             }
         }
