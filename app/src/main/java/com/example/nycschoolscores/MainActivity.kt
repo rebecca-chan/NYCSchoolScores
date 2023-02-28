@@ -1,10 +1,12 @@
 package com.example.nycschoolscores
 
 import android.content.Intent
+import android.opengl.Visibility
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.viewModels
+import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -37,10 +39,14 @@ class MainActivity : AppCompatActivity() {
             schoolRecyclerView.layoutManager = LinearLayoutManager(this@MainActivity)
         }
 
-        val schoolsViewModel: SchoolsViewModel =
-            ViewModelProvider(this).get(SchoolsViewModel::class.java)
+        val schoolsViewModel: SchoolsViewModel by viewModels()
 
-
-        schoolsViewModel.schools.observe(this, {schools -> schoolsAdapter.submitList(schools)})
+        schoolsViewModel.schools.observe(this) { schools -> schoolsAdapter.submitList(schools) }
+        schoolsViewModel.loadingState.observe(this) { loading ->
+            binding.progressCircular.isVisible = loading
+        }
+        schoolsViewModel.errorState.observe(this) { errorState ->
+            binding.error.isVisible = true
+        }
     }
 }

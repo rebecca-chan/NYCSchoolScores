@@ -2,6 +2,8 @@ package com.example.nycschoolscores
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.activity.viewModels
+import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import com.example.nycschoolscores.databinding.ActivitySchoolScoreDetailsBinding
 
@@ -11,7 +13,8 @@ class SchoolScoreDetailsActivity : AppCompatActivity() {
         val binding = ActivitySchoolScoreDetailsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val viewModel = ViewModelProvider(this).get(SchoolScoresViewModel::class.java)
+        val viewModel: SchoolScoresViewModel by viewModels()
+
         viewModel.scores.observe(this) {
             run {
                 binding.apply {
@@ -21,6 +24,12 @@ class SchoolScoreDetailsActivity : AppCompatActivity() {
                     writingScoreAvg.text = getString(R.string.writing_score, it.writing)
                 }
             }
+        }
+        viewModel.loadingState.observe(this) { loadingState ->
+            binding.progressCircular.isVisible = loadingState
+        }
+        viewModel.errorState.observe(this) { error ->
+            binding.error.isVisible = true
         }
 
         val id = intent.getStringExtra("id")
