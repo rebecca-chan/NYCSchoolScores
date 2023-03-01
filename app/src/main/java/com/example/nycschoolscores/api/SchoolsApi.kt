@@ -6,6 +6,9 @@ import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query
 
+/**
+ * API for network calls through Retrofit
+ */
 interface SchoolsApi {
 
     @GET("s3k6-pzi2.json")

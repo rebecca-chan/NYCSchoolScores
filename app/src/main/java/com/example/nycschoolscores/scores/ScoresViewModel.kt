@@ -1,17 +1,24 @@
-package com.example.nycschoolscores
+package com.example.nycschoolscores.scores
 
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.nycschoolscores.api.SchoolsService
 import com.example.nycschoolscores.data.SATScores
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import java.io.IOException
+import javax.inject.Inject
 
-class SchoolScoresViewModel: ViewModel() {
+/**
+ * ViewModel for [ScoreDetailsActivity]
+ */
+@HiltViewModel
+class ScoresViewModel @Inject constructor(
+    private val scoresRepository: ScoresRepository
+): ViewModel() {
 
     private val TAG = this.javaClass.name
 
@@ -25,11 +32,14 @@ class SchoolScoresViewModel: ViewModel() {
     val errorState: LiveData<Throwable>
         get() = _errorState
 
+    // TODO: set up wrapper for Loading, Content, Error states
+    // TODO: set up coroutine exception handler
+
     fun fetchScores(schoolId: String) {
         _loadingState.value = true
         viewModelScope.launch {
             val response = try {
-                SchoolsService.api.getScores(schoolId)
+                scoresRepository.getScores(schoolId)
             } catch (e: IOException) {
                 Log.e(TAG, "io exception")
                 _loadingState.value = false
@@ -52,8 +62,10 @@ class SchoolScoresViewModel: ViewModel() {
                 } else {
                     _scores.value = scores
                 }
-                _loadingState.value = false
+            } else {
+                _errorState.value = Throwable()
             }
+            _loadingState.value = false
         }
     }
 }

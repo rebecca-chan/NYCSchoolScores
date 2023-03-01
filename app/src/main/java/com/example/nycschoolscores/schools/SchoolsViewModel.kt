@@ -1,14 +1,23 @@
-package com.example.nycschoolscores
+package com.example.nycschoolscores.schools
 
 import android.util.Log
-import androidx.lifecycle.*
-import com.example.nycschoolscores.api.SchoolsService
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.nycschoolscores.data.School
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import java.io.IOException
+import javax.inject.Inject
 
-class SchoolsViewModel : ViewModel() {
+/**
+ * Viewmodel for [MainActivity]
+ */
+@HiltViewModel
+class SchoolsViewModel @Inject constructor(private val schoolsRepository: SchoolsRepository) :
+    ViewModel() {
 
     private val TAG = this.javaClass.name
 
@@ -27,11 +36,14 @@ class SchoolsViewModel : ViewModel() {
         getSchools()
     }
 
-    fun getSchools() {
+    // TODO: set up wrapper for Loading, Content, Error states
+
+
+    private fun getSchools() {
         _loadingState.value = true
         viewModelScope.launch {
             val response = try {
-                SchoolsService.api.getSchools()
+                schoolsRepository.getSchools()
             } catch (e: IOException) {
                 Log.e(TAG, "IO Exception")
                 _loadingState.value = false
@@ -43,15 +55,17 @@ class SchoolsViewModel : ViewModel() {
                 _errorState.value = e
                 return@launch
             } catch (throwable: Throwable) {
-               _loadingState.value = false
+                _loadingState.value = false
                 _errorState.value = throwable
                 return@launch
             }
             if (response.isSuccessful && response.body() != null) {
                 val schools = response.body()!!
                 _schools.value = schools
-                _loadingState.value = false
+            } else {
+                _errorState.value = Throwable()
             }
+            _loadingState.value = false
         }
     }
 }

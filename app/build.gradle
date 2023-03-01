@@ -1,6 +1,8 @@
 plugins {
     id 'com.android.application'
     id "org.jetbrains.kotlin.android" version "1.7.20"
+    id "org.jetbrains.kotlin.kapt"
+    id 'com.google.dagger.hilt.android'
 }
 
 android {
@@ -56,7 +58,7 @@ dependencies {
 
     // Room components
     implementation "androidx.room:room-runtime:$roomVersion"
-    annotationProcessor "androidx.room:room-compiler:$roomVersion"
+    kapt "androidx.room:room-compiler:$roomVersion"
     androidTestImplementation "androidx.room:room-testing:$roomVersion"
 
     // Lifecycle components
@@ -67,14 +69,24 @@ dependencies {
 
     // Hilt
     implementation "com.google.dagger:hilt-android:$hiltVersion"
-    annotationProcessor "com.google.dagger:hilt-android-compiler:$hiltVersion"
+    kapt "com.google.dagger:hilt-android-compiler:$hiltVersion"
+    kapt "com.google.dagger:hilt-compiler:$hiltVersion"
+
 
     // Testing
     androidTestImplementation "androidx.test:core-ktx:1.5.0"
     androidTestImplementation "androidx.test.ext:junit-ktx:1.1.5"
     androidTestImplementation "androidx.test:rules:1.5.0"
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutinesVersion"
+    testImplementation "androidx.arch.core:core-testing:2.2.0"
+    testImplementation 'org.assertj:assertj-core:3.23.1'
+
 
     // Hilt testing dependency
     androidTestImplementation  "com.google.dagger:hilt-android-testing:$hiltVersion"
     androidTestAnnotationProcessor "com.google.dagger:hilt-compiler:$hiltVersion"
+
+    // Retrofit testing
+    testImplementation "com.squareup.okhttp3:mockwebserver:4.9.0"
+    testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0"
 }

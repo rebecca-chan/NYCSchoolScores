@@ -2,6 +2,9 @@ package com.example.nycschoolscores.data
 
 import com.google.gson.annotations.SerializedName
 
+/**
+ * Model for School's SAT average scores, serves as both network response model and domain model
+ */
 data class SATScores(
     @SerializedName("dbn") val id: String,
     @SerializedName("school_name") val name: String,

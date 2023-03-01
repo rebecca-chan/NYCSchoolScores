@@ -1,22 +1,19 @@
-package com.example.nycschoolscores
+package com.example.nycschoolscores.schools
 
 import android.content.Intent
-import android.opengl.Visibility
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.nycschoolscores.api.SchoolsService
 import com.example.nycschoolscores.databinding.ActivityMainBinding
-import com.example.nycschoolscores.ui.SchoolAdapter
-import kotlinx.coroutines.launch
-import retrofit2.HttpException
-import java.io.IOException
+import com.example.nycschoolscores.scores.ScoreDetailsActivity
+import dagger.hilt.android.AndroidEntryPoint
 
+/**
+ * Entry point for app, displays list of NYC schools and its neighborhood location
+ */
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     private lateinit var schoolsAdapter: SchoolAdapter
@@ -30,7 +27,7 @@ class MainActivity : AppCompatActivity() {
            schoolsAdapter = SchoolAdapter(
                 SchoolAdapter.OnClickListener {
                     school ->
-                    intent = Intent(this@MainActivity, SchoolScoreDetailsActivity::class.java)
+                    intent = Intent(this@MainActivity, ScoreDetailsActivity::class.java)
                     intent.putExtra("id", school.id)
                     this@MainActivity.startActivity(intent)
                 }

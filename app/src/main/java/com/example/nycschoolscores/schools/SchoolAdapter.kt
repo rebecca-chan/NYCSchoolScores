@@ -1,7 +1,6 @@
-package com.example.nycschoolscores.ui
+package com.example.nycschoolscores.schools
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -9,6 +8,9 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.example.nycschoolscores.data.School
 import com.example.nycschoolscores.databinding.SchoolRecyclerViewItemBinding
 
+/**
+ * Recyclerview Adapter for list of schools presented
+ */
 class SchoolAdapter(private val onClickListener: OnClickListener) :
     ListAdapter<School, SchoolAdapter.SchoolViewHolder>(SchoolsComparator()) {
 
