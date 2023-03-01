@@ -1,4 +1,4 @@
-#NYCSchools
+#NYCSchools<br>
 Built with Android Studio Dolphin | 2021.3.1
 I focused on using MVVM with Hilt as a start to this project so it can be scalable and maintainable later.
 Other libraries I used - Retrofit for network calls, Coroutines for long running tasks
