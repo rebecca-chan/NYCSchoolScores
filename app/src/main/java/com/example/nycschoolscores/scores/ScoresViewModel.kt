@@ -50,10 +50,6 @@ class ScoresViewModel @Inject constructor(
                 _loadingState.value = false
                 _errorState.value = e
                 return@launch
-            } catch (throwable: Throwable) {
-                _loadingState.value = false
-                _errorState.value = throwable
-                return@launch
             }
             if (response.isSuccessful && response.body() != null) {
                 val scores = response.body()?.getOrNull(0)
