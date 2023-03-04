@@ -1,12 +1,10 @@
 package com.example.nycschoolscores.schools
 
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.example.nycschoolscores.data.School
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import java.io.IOException
@@ -21,9 +19,7 @@ class SchoolsViewModel @Inject constructor(private val schoolsRepository: School
 
     private val TAG = this.javaClass.name
 
-    val _schools = MutableLiveData<List<School>>()
-    val schools: LiveData<List<School>>
-        get() = _schools
+    val schools: LiveData<List<School>> = schoolsRepository.getSchools().asLiveData()
     val _loadingState = MutableLiveData<Boolean>()
     val loadingState: LiveData<Boolean>
         get() = _loadingState
@@ -41,9 +37,9 @@ class SchoolsViewModel @Inject constructor(private val schoolsRepository: School
 
     private fun getSchools() {
         _loadingState.value = true
-        viewModelScope.launch {
-            val response = try {
-                schoolsRepository.getSchools()
+        viewModelScope.launch (getCoroutineExceptionHandler()) {
+            try {
+                schoolsRepository.fetchSchools()
             } catch (e: IOException) {
                 Log.e(TAG, "IO Exception")
                 _loadingState.value = false
@@ -55,13 +51,14 @@ class SchoolsViewModel @Inject constructor(private val schoolsRepository: School
                 _errorState.value = e
                 return@launch
             }
-            if (response.isSuccessful && response.body() != null) {
-                val schools = response.body()!!
-                _schools.value = schools
-            } else {
-                _errorState.value = Throwable()
-            }
             _loadingState.value = false
+        }
+    }
+
+    private fun getCoroutineExceptionHandler() : CoroutineExceptionHandler {
+        return CoroutineExceptionHandler { _, throwable ->
+            _errorState.value = throwable
+            println(throwable.printStackTrace())
         }
     }
 }

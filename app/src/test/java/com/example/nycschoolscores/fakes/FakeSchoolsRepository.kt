@@ -11,7 +11,7 @@ class FakeSchoolsRepository : SchoolsRepository {
 
     private lateinit var schoolsResponse: Response<List<School>>
 
-    override suspend fun getSchools(): Response<List<School>> {
+    override suspend fun fetchSchools(): Response<List<School>> {
         return schoolsResponse
     }
 

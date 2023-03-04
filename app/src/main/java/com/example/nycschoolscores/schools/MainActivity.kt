@@ -17,6 +17,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     private lateinit var schoolsAdapter: SchoolAdapter
+    val schoolsViewModel: SchoolsViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,8 +36,6 @@ class MainActivity : AppCompatActivity() {
             schoolRecyclerView.adapter = schoolsAdapter
             schoolRecyclerView.layoutManager = LinearLayoutManager(this@MainActivity)
         }
-
-        val schoolsViewModel: SchoolsViewModel by viewModels()
 
         schoolsViewModel.schools.observe(this) { schools -> schoolsAdapter.submitList(schools) }
         schoolsViewModel.loadingState.observe(this) { loading ->
