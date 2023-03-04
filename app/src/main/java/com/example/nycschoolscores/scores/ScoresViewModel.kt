@@ -7,8 +7,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.nycschoolscores.data.SATScores
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import retrofit2.HttpException
+import kotlinx.coroutines.withContext
 import java.io.IOException
 import javax.inject.Inject
 
@@ -18,7 +20,7 @@ import javax.inject.Inject
 @HiltViewModel
 class ScoresViewModel @Inject constructor(
     private val scoresRepository: ScoresRepository
-): ViewModel() {
+) : ViewModel() {
 
     private val TAG = this.javaClass.name
 
@@ -33,35 +35,37 @@ class ScoresViewModel @Inject constructor(
         get() = _errorState
 
     // TODO: set up wrapper for Loading, Content, Error states
-    // TODO: set up coroutine exception handler
 
     fun fetchScores(schoolId: String) {
         _loadingState.value = true
-        viewModelScope.launch {
-            val response = try {
-                scoresRepository.getScores(schoolId)
-            } catch (e: IOException) {
-                Log.e(TAG, "io exception")
-                _loadingState.value = false
-                _errorState.value = e
-                return@launch
-            } catch (e: HttpException) {
-                Log.e(TAG, "http exception")
-                _loadingState.value = false
-                _errorState.value = e
-                return@launch
-            }
-            if (response.isSuccessful && response.body() != null) {
-                val scores = response.body()?.getOrNull(0)
-                if (scores == null) {
-                    _errorState.value = Throwable()
-                } else {
-                    _scores.value = scores
+        viewModelScope.launch (getCoroutineExceptionHandler()){
+            withContext(Dispatchers.Main) {
+                val response = try {
+                    scoresRepository.getScoresForSchool(schoolId)
+                } catch (e: IOException) {
+                    Log.e(TAG, "io exception")
+                    _loadingState.value = false
+                    _errorState.value = e
+                    return@withContext
                 }
-            } else {
-                _errorState.value = Throwable()
+                // if exists in db, show from db, else retry fetch
+                if (response != null) {
+                    _scores.value = response
+                } else {
+                    withContext(Dispatchers.IO) {
+                        scoresRepository.fetchAllScores()
+                        scoresRepository.getScoresForSchool(schoolId)
+                    }
+                }
+                _loadingState.value = false
             }
-            _loadingState.value = false
+        }
+    }
+
+    private fun getCoroutineExceptionHandler() : CoroutineExceptionHandler {
+        return CoroutineExceptionHandler { _, throwable ->
+            _errorState.value = throwable
+            println(throwable.printStackTrace())
         }
     }
 }

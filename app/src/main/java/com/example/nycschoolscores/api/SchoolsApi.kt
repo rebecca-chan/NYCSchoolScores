@@ -20,4 +20,7 @@ interface SchoolsApi {
         @Query("dbn") dbn: String
     ): Response<List<SATScores>>
 
+    @GET("f9bf-2cp4.json")
+    suspend fun getAllScores(): Response<List<SATScores>>
+
 }

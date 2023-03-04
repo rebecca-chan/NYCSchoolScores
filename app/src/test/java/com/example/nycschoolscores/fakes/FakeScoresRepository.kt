@@ -11,7 +11,7 @@ class FakeScoresRepository : ScoresRepository {
 
     private lateinit var scores: Response<List<SATScores>>
 
-    override suspend fun getScores(id: String): Response<List<SATScores>> {
+    override suspend fun getScoresForSchool(id: String): Response<List<SATScores>> {
        return scores
     }
 
