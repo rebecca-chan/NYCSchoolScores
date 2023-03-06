@@ -1,27 +1,32 @@
 package com.example.nycschoolscores.fakes
 
+import android.util.Log
 import com.example.nycschoolscores.data.SATScores
+import com.example.nycschoolscores.fixtures.SchoolsFixtures
 import com.example.nycschoolscores.fixtures.ScoresFixtures
 import com.example.nycschoolscores.scores.ScoresRepository
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.ResponseBody.Companion.toResponseBody
+import retrofit2.HttpException
 import retrofit2.Response
 
 class FakeScoresRepository : ScoresRepository {
 
-    private lateinit var scores: Response<List<SATScores>>
+    var allScores: SATScores? = null
 
-    override suspend fun getScoresForSchool(id: String): Response<List<SATScores>> {
-       return scores
+    override suspend fun fetchAllScores() {
+        // do nothing
     }
 
-    fun setSuccessfulScoresResponse() {
-        scores = Response.success(ScoresFixtures.listOfOneScore)
+    override suspend fun getScoresForSchool(id: String): SATScores? {
+        return allScores
     }
 
-    fun setErrorScoresResponse() {
-        scores = Response.error(400, "{\"key\":[\"wrongKey\"]}"
-            .toResponseBody("application/json".toMediaTypeOrNull()))
+    fun setScores() {
+        allScores = ScoresFixtures.SCORES_1
     }
+
 
 }

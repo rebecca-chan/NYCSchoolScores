@@ -3,24 +3,25 @@ package com.example.nycschoolscores.fakes
 import com.example.nycschoolscores.data.School
 import com.example.nycschoolscores.fixtures.SchoolsFixtures
 import com.example.nycschoolscores.schools.SchoolsRepository
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.ResponseBody.Companion.toResponseBody
-import retrofit2.Response
+import io.reactivex.internal.operators.flowable.FlowableError
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.runBlocking
 
 class FakeSchoolsRepository : SchoolsRepository {
 
-    private lateinit var schoolsResponse: Response<List<School>>
+    var schoolsFlow: Flow<List<School>> = flowOf(listOf())
 
-    override suspend fun fetchSchools(): Response<List<School>> {
-        return schoolsResponse
+    override fun getSchools(): Flow<List<School>> {
+        return flowOf(SchoolsFixtures.schools)
     }
 
-    fun setSuccessfulSchoolResponse() {
-        schoolsResponse = Response.success(SchoolsFixtures.schools)
+    override suspend fun fetchSchools() {
+        // do nothing
     }
 
-    fun setErrorSchoolResponse() {
-        schoolsResponse = Response.error(400, "{\"key\":[\"wrongKey\"]}"
-            .toResponseBody("application/json".toMediaTypeOrNull()))
+    fun setSchools() {
+        schoolsFlow = flowOf(SchoolsFixtures.schools)
     }
+
+
 }

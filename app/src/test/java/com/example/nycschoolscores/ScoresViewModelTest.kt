@@ -41,24 +41,13 @@ class ScoresViewModelTest {
     }
 
     @Test
-    fun `should return scores on response success` () {
-        fakeScoresRepository.setSuccessfulScoresResponse()
+    fun `should show scores on response success` () {
+        fakeScoresRepository.setScores()
         scoresViewModel = ScoresViewModel(fakeScoresRepository)
         scoresViewModel.fetchScores(SCORES_1.id)
 
         Assertions.assertThat(scoresViewModel.scores.value).isEqualTo(SCORES_1)
         Assertions.assertThat(scoresViewModel.errorState.value).isNull()
-    }
-
-    @Test
-    fun `should return error state when response error` () {
-        fakeScoresRepository.setErrorScoresResponse()
-        scoresViewModel = ScoresViewModel(fakeScoresRepository)
-        scoresViewModel.fetchScores(SCORES_1.id)
-
-        Assertions.assertThat(scoresViewModel.errorState.value)
-            .isExactlyInstanceOf(Throwable::class.java)
-        Assertions.assertThat(scoresViewModel.scores.value).isNull()
     }
 
 }

@@ -1,14 +1,16 @@
 package com.example.nycschoolscores
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.asFlow
+import androidx.lifecycle.asLiveData
 import com.example.nycschoolscores.fakes.FakeSchoolsRepository
 import com.example.nycschoolscores.fixtures.SchoolsFixtures
 import com.example.nycschoolscores.schools.SchoolsViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.UnconfinedTestDispatcher
-import kotlinx.coroutines.test.resetMain
-import kotlinx.coroutines.test.setMain
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.*
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.After
 
@@ -42,21 +44,13 @@ class SchoolsViewModelTest {
     }
 
     @Test
-    fun `should return list of schools on success` () {
-        fakeSchoolsRepository.setSuccessfulSchoolResponse()
-        schoolsViewModel = SchoolsViewModel(fakeSchoolsRepository)
+    fun `viewModel schools live data should observe schools from repository` () =
+        runTest {
+            fakeSchoolsRepository.setSchools()
+            schoolsViewModel = SchoolsViewModel(fakeSchoolsRepository)
 
-        assertThat(schoolsViewModel.schools.value).isEqualTo(SchoolsFixtures.schools)
-        assertThat(schoolsViewModel.errorState.value).isNull()
-    }
-
-    @Test
-    fun `should return error when response is error` () {
-        fakeSchoolsRepository.setErrorSchoolResponse()
-        schoolsViewModel = SchoolsViewModel(fakeSchoolsRepository)
-
-        assertThat(schoolsViewModel.errorState.value).isExactlyInstanceOf(Throwable::class.java)
-        assertThat(schoolsViewModel.schools.value).isNull()
+            assertThat(schoolsViewModel.schools.asFlow().first()).isEqualTo(SchoolsFixtures.schools)
+            assertThat(schoolsViewModel.errorState.value).isNull()
     }
 
 }

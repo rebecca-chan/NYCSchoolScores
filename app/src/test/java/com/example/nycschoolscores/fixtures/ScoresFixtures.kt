@@ -12,12 +12,9 @@ class ScoresFixtures {
            writing = "100",
            math = "0"
        )
-       val SCORES_2 = SATScores(
+       val SCORES_2 = SCORES_1.copy(
            id ="2",
-           name = "High School 2",
-           reading = "3000",
-           writing = "3",
-           math = "2"
+           name = "High School 2"
        )
        val listOfOneScore = listOf(SCORES_1)
        val listOfManyScores = listOf(SCORES_1, SCORES_2)
